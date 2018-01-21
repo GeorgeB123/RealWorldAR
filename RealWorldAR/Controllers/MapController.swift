@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDelegate {
+class MapController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: Properties
     
@@ -30,29 +30,8 @@ class MapController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDel
             locationManager.requestAlwaysAuthorization()
             locationManager.startUpdatingLocation()
             self.mapView.showsUserLocation = true
-            mapView.delegate = self
             addTapGesture()
         }
-    }
-    
-    //MARK: Private Methods
-    
-    private func addTapGesture() {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MapController.handleTap(_:)))
-        gestureRecognizer.delegate = self
-        mapView.addGestureRecognizer(gestureRecognizer)
-    }
-    
-    //Selector function for tap gesture
-    @objc func handleTap(_ gestureReconizer: UILongPressGestureRecognizer) {
-        let annotations = self.mapView.annotations
-        self.mapView.removeAnnotations(annotations)
-        let location = gestureReconizer.location(in: mapView)
-        let coordinate = mapView.convert(location,toCoordinateFrom: mapView)
-        objectLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        mapView.addAnnotation(annotation)
     }
     
     //MARK: Actions
@@ -69,6 +48,27 @@ class MapController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDel
         
     }
 
+}
+
+extension MapController {
+    
+    internal func addTapGesture() {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MapController.handleTap(_:)))
+        gestureRecognizer.delegate = self
+        mapView.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    //Selector function for tap gesture
+    @objc func handleTap(_ gestureReconizer: UILongPressGestureRecognizer) {
+        let annotations = self.mapView.annotations
+        self.mapView.removeAnnotations(annotations)
+        let location = gestureReconizer.location(in: mapView)
+        let coordinate = mapView.convert(location,toCoordinateFrom: mapView)
+        objectLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        mapView.addAnnotation(annotation)
+    }
 }
 
 //MARK: Extension CLLocationMangerDelegate
