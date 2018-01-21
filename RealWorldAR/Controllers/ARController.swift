@@ -54,7 +54,6 @@ class ARController: UIViewController {
         let Anchor = ARAnchor(transform: locationTransform)
         let node = BaseNode(location: location)
         node.position = SCNVector3.positionFromTransform(locationTransform)
-        print(node.position)
         node.addRocket()
         self.sceneView.session.add(anchor: Anchor)
         self.sceneView.scene.rootNode.addChildNode(node)
