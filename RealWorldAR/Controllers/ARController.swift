@@ -15,8 +15,8 @@ class ARController: UIViewController {
 
     //MARK: Properties
     @IBOutlet weak var sceneView: ARSCNView!
-    var objectLocation = CLLocation()
-    var currentLocation = CLLocation()
+    var objectLocation: CLLocation? = nil
+    var currentLocation: CLLocation? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,10 @@ class ARController: UIViewController {
         let configuration = ARWorldTrackingConfiguration()
         configuration.worldAlignment = .gravityAndHeading
         sceneView.session.run(configuration)
-        addObjectInSpace(for: objectLocation)
+        if let object = objectLocation {
+            addObjectInSpace(for: object)
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -50,7 +53,10 @@ class ARController: UIViewController {
     //MARK: Private Methods
     
     private func addObjectInSpace(for location: CLLocation) {
-        let locationTransform = MatrixHelper.transformMatrix(for: matrix_identity_float4x4, originLocation: currentLocation, location: location)
+        guard let origin = currentLocation else {
+            return
+        }
+        let locationTransform = MatrixHelper.transformMatrix(for: matrix_identity_float4x4, originLocation: origin, location: location)
         let Anchor = ARAnchor(transform: locationTransform)
         let node = BaseNode(location: location)
         node.position = SCNVector3.positionFromTransform(locationTransform)
